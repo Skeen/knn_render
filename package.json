@@ -4,6 +4,9 @@
   "description": "Output / render a knn_confusion matrix",
   "main": "knn_render.js",
   "scripts": {
+    "predist": "mkdir -p dist; npm install; npm install browserify",
+    "dist": "./node_modules/browserify/bin/cmd.js -s knn_confusion --bare index.js -o dist/knn_confusion.js",
+    "clean": "rm -rf dist node_modules",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
