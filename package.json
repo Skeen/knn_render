@@ -1,0 +1,15 @@
+{
+  "name": "knn_render",
+  "version": "0.0.1",
+  "description": "Output / render a knn_confusion matrix",
+  "main": "knn_render.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "commander": "^2.9.0",
+    "readline": "^1.3.0"
+  }
+}
