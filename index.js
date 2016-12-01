@@ -198,7 +198,7 @@ function confusion_to_accuracy(sites, confusion_matrix, opt)
                 var count = ((confusion_matrix[ground_truth] || {})[neighbour] || 0);
                 return acc + count;
             },0);
-            // Precision
+				// Precision
             var denom_precision = sites.reduce(function(acc, neighbour)
             {
                 var count = ((confusion_matrix[neighbour] || {})[ground_truth] || 0);
@@ -219,6 +219,24 @@ function confusion_to_accuracy(sites, confusion_matrix, opt)
     console.log(result);
 }
 
+function to_percentage(sites, confusion_matrix)
+{
+	sites.forEach(function(ground, index)
+	{
+		var sum = sites.reduce(function(a, b) { return a + (confusion_matrix[ground][b] || 0); }, 0);
+		sites.forEach(function(neighbor)
+        {
+            //var value = Math.floor(((confusion_matrix[ground] || {})[neighbor] || 0) * 100) / 100;
+            var value = (confusion_matrix[ground] || {})[neighbor] || 0;
+            var percent = value / sum * 100;
+			if(percent != 0)
+				confusion_matrix[ground][neighbor] = percent;
+        });
+
+	});
+	return confusion_matrix;
+}
+
 var options = require('commander');
 
 function increaser(v, total) { return total + 1; };
@@ -233,6 +251,7 @@ options
   .option('-,--', '')
   .option('-,--', 'Summary:')
   .option('-r, --resume', 'Print resume of the confusion matrix', increaser, 0)
+  .option('-p, --percentage', 'Print percentages rather than data')
   .option('-,--', '')
   .option('-,--', 'Latex:')
   .option('-l, --latex', 'Print confusion matrix as LaTeX')
@@ -346,7 +365,9 @@ read_timeseries(function(json)
         console.log(sites);
     }
     var confusion = json;
-
+	if(options.percentage)
+		confusion = to_percentage(sites, confusion);
+	//console.log(confusion);
     if(options.latex)
         confusion_to_latex(sites, confusion, options);
     if(options.resume)
