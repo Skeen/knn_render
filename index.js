@@ -116,13 +116,15 @@ function confusion_to_latex(sites, confusion_matrix, opt)
         {
             write(tw(index) + " & : & " + tw(ground));
         }
-        sites.forEach(function(neighbor)
+		if(opt.color)
+            var sum = sites.reduce(function(a, b) { return a + (confusion_matrix[ground][b] || 0); }, 0);
+        
+		sites.forEach(function(neighbor)
         {
             var value = Math.floor(((confusion_matrix[ground] || {})[neighbor] || 0) * 100) / 100;
             if(opt.color && value != 0)
             {
                 var color = (ground == neighbor ? "green" : "red");
-                var sum = sites.reduce(function(a, b) { return a + (confusion_matrix[ground][b] || 0); }, 0);
                 var percent = value / sum * 100;
 
                 write(" & \\cellcolor{" + color + "!" + percent + "}" + value);
