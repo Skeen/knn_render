@@ -247,13 +247,16 @@ options
   .version(pjson.version)
   .description(pjson.description + ".")
   .usage('[options]')
+  .option('-p, --percentage', 'Print percentages rather than data')
   .option('-,--', '')
   .option('-,--', 'Ground Truth:')
   .option('-g, --ground', 'Output ground truths')
   .option('-,--', '')
+  .option('-,--', 'Dump confusion matrix:')
+  .option('-C, --confusion', 'Output confusion matrix')
+  .option('-,--', '')
   .option('-,--', 'Summary:')
   .option('-r, --resume', 'Print resume of the confusion matrix', increaser, 0)
-  .option('-p, --percentage', 'Print percentages rather than data')
   .option('-,--', '')
   .option('-,--', 'Latex:')
   .option('-l, --latex', 'Print confusion matrix as LaTeX')
@@ -309,7 +312,9 @@ var help = function()
 if(options.help == undefined)
     help();
 
-if(!options.resume && !options.latex && !options.ground)
+var output_modes = [options.resume, options.latex, options.ground, options.confusion];
+var num_modes_selected = output_modes.reduce(function(a,b) { return a + (b ? 1 : 0); }, 0);
+if(num_modes_selected == 0)
 {
     console.error();
     console.error("Fatal error: No output mode selected!");
@@ -317,7 +322,7 @@ if(!options.resume && !options.latex && !options.ground)
     process.exit(1);
 }
 
-if(options.resume && options.latex || options.resume && options.ground || options.latex && options.ground)
+if(num_modes_selected != 1)
 {
     console.error();
     console.error("Fatal error: Cannot utilize two output modes at once!");
@@ -369,7 +374,8 @@ read_timeseries(function(json)
     var confusion = json;
 	if(options.percentage)
 		confusion = to_percentage(sites, confusion);
-	//console.log(confusion);
+    if(options.confusion)
+	    console.log(confusion);
     if(options.latex)
         confusion_to_latex(sites, confusion, options);
     if(options.resume)
