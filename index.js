@@ -225,8 +225,9 @@ function to_percentage(sites, confusion_matrix)
 {
 	sites.forEach(function(ground, index)
 	{
-		var sum = sites.reduce(function(a, b) { return a + (confusion_matrix[ground][b] || 0); }, 0);
-		sites.forEach(function(neighbor)
+        var neighbours = Object.keys(confusion_matrix[ground]);
+		var sum = neighbours.reduce(function(a, b) { return a + (confusion_matrix[ground][b] || 0); }, 0);
+		neighbours.forEach(function(neighbor)
         {
             //var value = Math.floor(((confusion_matrix[ground] || {})[neighbor] || 0) * 100) / 100;
             var value = (confusion_matrix[ground] || {})[neighbor] || 0;
@@ -234,7 +235,6 @@ function to_percentage(sites, confusion_matrix)
 			if(percent != 0)
 				confusion_matrix[ground][neighbor] = percent;
         });
-
 	});
 	return confusion_matrix;
 }
@@ -375,7 +375,7 @@ read_timeseries(function(json)
 	if(options.percentage)
 		confusion = to_percentage(sites, confusion);
     if(options.confusion)
-	    console.log(confusion);
+	    console.log(JSON.stringify(confusion));
     if(options.latex)
         confusion_to_latex(sites, confusion, options);
     if(options.resume)
