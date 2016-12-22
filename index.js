@@ -218,7 +218,10 @@ function confusion_to_accuracy(sites, confusion_matrix, opt)
     }
 
     // Print out our result
-    console.log(result);
+    if(options.stringify)
+        console.log(JSON.stringify(result));
+    else
+        console.log(result);
 }
 
 function to_percentage(sites, confusion_matrix)
@@ -257,6 +260,7 @@ options
   .option('-,--', '')
   .option('-,--', 'Summary:')
   .option('-r, --resume', 'Print resume of the confusion matrix', increaser, 0)
+  .option('-S, --stringify', 'Strinigfy before writing')
   .option('-,--', '')
   .option('-,--', 'Latex:')
   .option('-l, --latex', 'Print confusion matrix as LaTeX')
