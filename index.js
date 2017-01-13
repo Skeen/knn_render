@@ -57,7 +57,14 @@ function confusion_to_latex(sites, confusion_matrix, opt)
         {
             write("\\begin{tabular}{");
         }
-        console.log("|lcl|" + Array(sites.length+1).join('c|') + "} \\hline");
+        if(opt.tiny)
+        {
+            console.log("|lcl|c|} \\hline");
+        }
+        else
+        {
+            console.log("|lcl|" + Array(sites.length+1).join('c|') + "} \\hline");
+        }
     }
 
     var end = function()
@@ -76,17 +83,24 @@ function confusion_to_latex(sites, confusion_matrix, opt)
     var header_line = function()
     {
         write("\\multicolumn{3}{|c|}{" + tw("X") + "}");
-        sites.forEach(function(site, index)
+        if(opt.tiny)
         {
-            if(opt.alias)
+            write(" & " + tw("Accuracy"));
+        }
+        else
+        {
+            sites.forEach(function(site, index)
             {
-                write(" & " + tw(site));
-            }
-            else
-            {
-                write(" & " + tw("(" + index + ")"));
-            }
-        });
+                if(opt.alias)
+                {
+                    write(" & " + tw(site));
+                }
+                else
+                {
+                    write(" & " + tw("(" + index + ")"));
+                }
+            });
+        }
         console.log(" \\\\ \\hline");
     }
 
@@ -119,7 +133,7 @@ function confusion_to_latex(sites, confusion_matrix, opt)
 		if(opt.color)
             var sum = sites.reduce(function(a, b) { return a + (confusion_matrix[ground][b] || 0); }, 0);
         
-		sites.forEach(function(neighbor)
+        var write_value = function(ground, neighbor)
         {
             var value = Math.floor(((confusion_matrix[ground] || {})[neighbor] || 0) * 100) / 100;
             if(opt.color && value != 0)
@@ -133,7 +147,19 @@ function confusion_to_latex(sites, confusion_matrix, opt)
             {
                 write(" & " + value);
             }
-        });
+        }
+
+        if(options.tiny)
+        {
+            write_value(ground, ground);
+        }
+        else
+        {
+            sites.forEach(function(neighbor)
+            {
+                write_value(ground, neighbor);
+            });
+        }
         console.log(" \\\\ \\hline");
     });
     end();
@@ -260,6 +286,7 @@ options
   .option('-,--', '')
   .option('-,--', 'Latex:')
   .option('-l, --latex', 'Print confusion matrix as LaTeX')
+  .option('-t, --tiny', 'Print a tiny output')
   .option('-s, --standalone', 'Print a self-contained LaTeX document')
   .option('-c, --color', 'Add color to output table')
   .option('-x, --alias', 'Shorten header row for large tables')
