@@ -405,13 +405,14 @@ read_timeseries(function(json)
     {
         if(options.tiny)
         {
-            var o = Object.keys(confusion).reduce(function(acc, ground)
+            var a = Object.keys(confusion).map(function(ground)
             {
-                acc[ground] = Math.floor(((confusion[ground] || {})[ground] || 0) * 100) / 100;
-                return acc;
-            }, {});
-            var a = Object.values(o);
-            a.sort();
+                return Math.floor(((confusion[ground] || {})[ground] || 0) * 100) / 100;
+            });
+            a.sort(function(o1, o2)
+            {
+                return o1 - o2;
+            });
             console.log("data");
             a.forEach(function(elem)
             {
