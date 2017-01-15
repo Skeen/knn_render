@@ -413,10 +413,10 @@ read_timeseries(function(json)
             {
                 return o1 - o2;
             });
-            console.log("data");
-            a.forEach(function(elem)
+            console.log("index, percentage");
+            a.forEach(function(elem, index)
             {
-                console.log(elem);
+                console.log((index+1) / a.length + ", " + elem);
             });
         }
         else
