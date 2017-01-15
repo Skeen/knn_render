@@ -402,7 +402,27 @@ read_timeseries(function(json)
 	if(options.percentage)
 		confusion = to_percentage(sites, confusion);
     if(options.confusion)
-	    console.log(JSON.stringify(confusion));
+    {
+        if(options.tiny)
+        {
+            var o = Object.keys(confusion).reduce(function(acc, ground)
+            {
+                acc[ground] = Math.floor(((confusion[ground] || {})[ground] || 0) * 100) / 100;
+                return acc;
+            }, {});
+            var a = Object.values(o);
+            a.sort();
+            console.log("data");
+            a.forEach(function(elem)
+            {
+                console.log(elem);
+            });
+        }
+        else
+        {
+            console.log(JSON.stringify(confusion));
+        }
+    }
     if(options.latex)
         confusion_to_latex(sites, confusion, options);
     if(options.resume)
